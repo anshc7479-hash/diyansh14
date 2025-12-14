@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>diyansh14</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #ffffff;
+    }
+
+    .app {
+      max-width: 420px;
+      margin: auto;
+      padding: 16px;
+    }
+
+    .card {
+      background: #111827;
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    h2 {
+      text-align: center;
+      margin: 6px 0 10px;
+    }
+
+    .balance {
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .note {
+      text-align: center;
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    .timer {
+      text-align: center;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    .bet {
+      margin-top: 14px;
+      display: flex;
+    }
+
+    .bet input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+    }
+
+    .colors {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button {
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .red { background: #ef4444; }
+    .green { background: #22c55e; }
+    .violet { background: #8b5cf6; }
+
+    .result {
+      margin-top: 12px;
+      font-size: 18px;
+      text-align: center;
+      animation: pop 0.3s ease;
+    }
+
+    .history {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #cbd5f5;
+    }
+
+    .history div {
+      opacity: 0.85;
+    }
+
+    .footer {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    @keyframes pop {
+      from { transform: scale(0.95); }
+      to { transform: scale(1); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <div class="card">
+
+      <h2>diyansh14</h2>
+
+      <div class="balance">
+        Demo Balance: <span id="balance">10000</span> coins
+      </div>
+
+      <div class="note">
+        Practice only â€¢ No real money â€¢ No withdrawal
+      </div>
+
+      <div class="timer">
+        Next round in: <span id="timer">30</span>s
+      </div>
+
+      <div class="bet">
+        <input type="number" id="betAmount" value="100" placeholder="Enter bet coins">
+      </div>
+
+      <div class="colors">
+        <button class="red" onclick="play('RED')">RED</button>
+        <button class="green" onclick="play('GREEN')">GREEN</button>
+        <button class="violet" onclick="play('VIOLET')">VIOLET</button>
+      </div>
+
+      <div class="result" id="result">
+        Select a colour to play
+      </div>
+
+      <div class="history" id="history"></div>
+
+      <div class="footer">
+        Demo / Practice Game
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let balance = 10000;
+    const winChance = 0.7; // 70% demo win chance
+    const colours = ["RED", "GREEN", "VIOLET"];
+    let history = [];
+
+    // TIMER (30 seconds)
+    let time = 30;
+    setInterval(() => {
+      document.getElementById("timer").innerText = time;
+      time--;
+      if (time < 0) time = 30;
+    }, 1000);
+
+    function play(userChoice) {
+      const bet = Number(document.getElementById("betAmount").value || 0);
+
+      if (bet <= 0 || bet > balance) {
+        setResult("Invalid bet amount");
+        return;
+      }
+
+      const isWin = Math.random() < winChance;
+      const resultColour = colours[Math.floor(Math.random() * colours.length)];
+
+      if (isWin && userChoice === resultColour) {
+        balance += bet;
+        setResult("WIN ðŸŽ‰ Result: " + resultColour);
+        addHistory("WIN - " + resultColour + " (+" + bet + ")");
+      } else {
+        balance -= bet;
+        setResult("LOSS âŒ Result: " + resultColour);
+        addHistory("LOSS - " + resultColour + " (-" + bet + ")");
+      }
+
+      document.getElementById("balance").innerText = balance;
+    }
+
+    function setResult(text) {
+      const el = document.getElementById("result");
+      el.innerText = text;
+      el.style.animation = "none";
+      el.offsetHeight;
+      el.style.animation = null;
+    }
+
+    function addHistory(text) {
+      history.unshift(text);
+      history = history.slice(0, 5);
+      document.getElementById("history").innerHTML =
+        history.map(h => "<div>" + h + "</div>").join("");
+    }
+  </script>
+</body>
+</html>
